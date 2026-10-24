@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f6f1">
+  <title>Between Lines — 영어로 쓰는 나의 기록</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Gowun+Batang:wght@400;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --paper: #f7f6f1;
+      --white: #fffefa;
+      --ink: #292b25;
+      --muted: #85877d;
+      --line: #e8e6dc;
+      --green: #365f4c;
+      --green-dark: #284b3a;
+      --sage: #e7eee5;
+      --orange: #cc7652;
+      --peach: #f5e9df;
+      --serif: "Gowun Batang", Georgia, serif;
+      --sans: "DM Sans", "Manrope", sans-serif;
+      --shadow: 0 18px 55px rgba(57, 54, 42, .07);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    button, textarea { font: inherit; }
+    button { color: inherit; }
+    .shell { min-height: 100vh; }
+    .topbar {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 max(6vw, calc((100vw - 1200px) / 2));
+      border-bottom: 1px solid rgba(41, 43, 37, .08);
+      background: rgba(247, 246, 241, .92);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      border: 0;
+      background: none;
+      cursor: pointer;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -.6px;
+    }
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--green);
+      border-radius: 50% 50% 50% 8px;
+      font-family: var(--serif);
+      font-size: 17px;
+    }
+    .brand span:last-child { color: var(--green); }
+    .nav { display: flex; gap: 34px; }
+    .nav button {
+      border: 0;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 13px;
+      padding: 8px 0;
+    }
+    .nav button.active, .nav button:hover { color: var(--green); }
+    .nav button.active { font-weight: 700; }
+    .profile {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #e9ded1;
+      color: #775e48;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    main { max-width: 1120px; margin: 0 auto; padding: 50px 28px 90px; }
+    .view { display: none; animation: enter .24s ease-out; }
+    .view.active { display: block; }
+    @keyframes enter { from { opacity: .4; transform: translateY(5px); } to { opacity: 1; transform: none; } }
+    .eyebrow {
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, .serif { font-family: var(--serif); font-weight: 400; }
+    h1 { font-size: clamp(38px, 5.5vw, 62px); line-height: 1.25; letter-spacing: -2.5px; margin: 14px 0 15px; }
+    h2 { font-size: 34px; line-height: 1.3; letter-spacing: -1.2px; }
+    h3 { font-size: 17px; }
+    .intro { color: #72746c; font-size: 15px; line-height: 1.9; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.08fr .92fr;
+      gap: 58px;
+      align-items: center;
+      padding: 24px 0 56px;
+    }
+    .hero-copy { max-width: 530px; }
+    .hero-copy h1 em { color: var(--green); font-style: normal; }
+    .hero-copy .intro { max-width: 440px; margin-bottom: 26px; }
+    .button {
+      display: inline-flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 20px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: var(--green);
+      color: white;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: .2s ease;
+    }
+    .button:hover { background: var(--green-dark); transform: translateY(-1px); }
+    .button.secondary { background: transparent; color: var(--green); border-color: #cdd8cd; }
+    .button.secondary:hover { background: var(--sage); }
+    .button.small { min-height: 39px; padding: 0 15px; font-size: 12px; }
+    .text-button {
+      border: 0;
+      background: none;
+      color: var(--green);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .hero-card {
+      min-height: 332px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 34px;
+      border-radius: 7px;
+      background:
+        radial-gradient(ellipse at 90% 12%, rgba(230, 179, 124, .32), transparent 25%),
+        linear-gradient(142deg, #e5eee4 5%, #d9e5d7 48%, #cbd9cb 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero-card::after {
+      content: "✳";
+      position: absolute;
+      right: 10px;
+      bottom: -87px;
+      color: rgba(255,255,255,.4);
+      font-size: 255px;
+      line-height: 1;
+      transform: rotate(-13deg);
+    }
+    .card-top, .card-bottom { position: relative; z-index: 1; }
+    .card-label { color: #536f5b; font-size: 11px; font-weight: 700; letter-spacing: 1.4px; }
+    .hero-card h2 { max-width: 390px; margin: 22px 0 15px; font-size: 30px; }
+    .hero-card .question { max-width: 375px; color: #536258; font-family: var(--serif); font-size: 16px; line-height: 1.8; }
+    .card-bottom { display: flex; align-items: center; justify-content: space-between; color: #526655; font-size: 12px; }
+    .card-bottom .button { color: white; }
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-bottom: 58px; }
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 17px 20px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255,254,250,.48);
+    }
+    .stat-icon { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: var(--sage); color: var(--green); }
+    .stat strong { display: block; font-size: 20px; line-height: 1.2; }
+    .stat span:last-child { color: var(--muted); font-size: 11px; }
+    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 20px; }
+    .section-head h2 { margin: 6px 0 0; font-size: 27px; }
+    .section-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .recent-list { display: grid; gap: 10px; }
+    .recent-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 17px 20px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+      cursor: pointer;
+      transition: .2s;
+    }
+    .recent-item:hover, .topic-card:hover { border-color: #c4d0c3; transform: translateY(-2px); }
+    .recent-title { font-family: var(--serif); font-size: 17px; }
+    .recent-meta { margin-top: 3px; color: var(--muted); font-size: 11px; }
+    .status-pill { padding: 5px 9px; border-radius: 20px; background: var(--sage); color: var(--green); font-size: 10px; white-space: nowrap; }
+    .empty-state { padding: 28px; border: 1px dashed #d8d6cc; border-radius: 6px; color: var(--muted); font-size: 13px; text-align: center; }
+    .page-heading { margin-bottom: 28px; }
+    .page-heading h1 { margin: 8px 0; font-size: 43px; }
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+    .filter {
+      padding: 8px 13px;
+      border: 1px solid var(--line);
+      border-radius: 30px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 11px;
+    }
+    .filter.active { border-color: var(--green); background: var(--green); color: white; }
+    .topic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .topic-card {
+      min-height: 223px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 21px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--white);
+      cursor: pointer;
+      text-align: left;
+      transition: .2s;
+    }
+    .topic-card .category { color: var(--orange); font-size: 10px; font-weight: 700; letter-spacing: .7px; }
+    .topic-card h3 { margin: 15px 0 9px; font-family: var(--serif); font-size: 20px; font-weight: 400; line-height: 1.45; }
+    .topic-card p { margin: 0; color: #7e8077; font-family: var(--serif); font-size: 12px; line-height: 1.75; }
+    .topic-card .topic-foot { display: flex; justify-content: space-between; width: 100%; margin-top: auto; padding-top: 17px; color: var(--muted); font-size: 10px; }
+    .writer-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .back-link { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 12px; }
+    .save-state { color: var(--muted); font-size: 11px; }
+    .writer-layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 32px; }
+    .prompt-panel { padding: 23px; border-radius: 6px; background: var(--sage); }
+    .prompt-panel h2 { margin: 13px 0 12px; font-size: 25px; line-height: 1.45; }
+    .prompt-panel > p { color: #657469; font-family: var(--serif); font-size: 13px; line-height: 1.8; }
+    .prompt-list { display: grid; gap: 5px; margin-top: 24px; }
+    .prompt-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 0;
+      border-top: 1px solid rgba(54,95,76,.12);
+      color: #627068;
+      cursor: pointer;
+      font-family: var(--serif);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+    .prompt-step.active { color: var(--green-dark); font-weight: 700; }
+    .prompt-step.done { color: var(--green); }
+    .step-num { flex: 0 0 20px; width: 20px; height: 20px; display: grid; place-items: center; border-radius: 50%; background: rgba(54,95,76,.1); font-family: var(--sans); font-size: 10px; }
+    .writing-panel { padding: 8px 0; }
+    .progress-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; color: var(--muted); font-size: 11px; }
+    .progress-track { height: 3px; margin-bottom: 25px; background: #e7e5dc; }
+    .progress-fill { height: 100%; background: var(--green); transition: width .2s; }
+    .question-number { color: var(--orange); font-size: 10px; font-weight: 700; letter-spacing: 1.3px; }
+    .writing-panel h2 { max-width: 620px; margin: 9px 0 12px; font-size: 29px; }
+    .writing-guidance { margin-bottom: 17px; color: var(--muted); font-size: 12px; }
+    textarea {
+      width: 100%;
+      min-height: 190px;
+      resize: vertical;
+      padding: 17px;
+      border: 1px solid #e5e3d9;
+      border-radius: 5px;
+      outline: none;
+      background: var(--white);
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 15px;
+      line-height: 1.85;
+    }
+    textarea:focus { border-color: #91a995; box-shadow: 0 0 0 3px rgba(54,95,76,.07); }
+    textarea::placeholder { color: #b1b0a7; }
+    .writer-actions { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 16px; }
+    .writer-actions .right-actions { display: flex; gap: 9px; }
+    .skip-button { padding: 9px 0; border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 12px; }
+    .helper-box { margin-top: 20px; padding: 14px 16px; border-radius: 5px; background: #f3eee6; color: #786957; font-size: 11px; line-height: 1.8; }
+    .dictionary { margin-top: 19px; padding: 16px; border: 1px solid var(--line); border-radius: 5px; background: rgba(255,254,250,.7); }
+    .dictionary-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 11px; }
+    .dictionary-heading strong { display: block; margin-top: 3px; font-family: var(--serif); font-size: 16px; font-weight: 400; }
+    .dictionary-heading > span, .dictionary-note { color: var(--muted); font-size: 10px; }
+    .dictionary-search { display: flex; gap: 8px; }
+    .dictionary-search input { width: 100%; min-width: 0; padding: 9px 11px; border: 1px solid #e5e3d9; border-radius: 5px; outline: none; background: var(--white); font: inherit; font-size: 12px; }
+    .dictionary-search input:focus { border-color: #91a995; }
+    .dictionary-note { margin-top: 7px; line-height: 1.6; }
+    .dictionary-result { margin-top: 10px; color: #5e675e; font-size: 12px; line-height: 1.7; }
+    .dictionary-result strong { color: var(--ink); font-size: 14px; }
+    .dictionary-result a { display: inline-block; margin-top: 4px; color: var(--green); font-size: 11px; }
+    .refine-layout { max-width: 760px; margin: 0 auto; }
+    .refine-layout h1 { font-size: 39px; }
+    .refine-layout .intro { margin-bottom: 23px; }
+    .review-prompts { margin: 16px 0 25px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 5px; background: rgba(255,254,250,.6); }
+    .review-prompts summary { color: var(--green); cursor: pointer; font-size: 12px; font-weight: 700; }
+    .review-prompts ol { padding-left: 20px; color: #73756d; font-family: var(--serif); font-size: 12px; line-height: 2; }
+    .word-count { display: flex; justify-content: space-between; margin: 8px 0 20px; color: var(--muted); font-size: 11px; }
+    .feedback-box { margin-top: 24px; padding: 22px; border: 1px solid #dbe4d9; border-radius: 6px; background: #f0f4ed; }
+    .feedback-box h3 { margin: 8px 0; font-family: var(--serif); font-weight: 400; }
+    .feedback-box p { margin-bottom: 0; color: #68746a; font-size: 12px; line-height: 1.8; }
+    .record-layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 25px; align-items: start; }
+    .record-list { display: grid; gap: 9px; }
+    .record-row { padding: 15px; border: 1px solid var(--line); border-radius: 5px; background: var(--white); cursor: pointer; }
+    .record-row.active { border-color: var(--green); box-shadow: 0 0 0 1px var(--green); }
+    .record-row strong { display: block; font-family: var(--serif); font-size: 15px; font-weight: 400; }
+    .record-row span { color: var(--muted); font-size: 10px; }
+    .record-detail { min-height: 270px; padding: 26px; border: 1px solid var(--line); border-radius: 6px; background: var(--white); }
+    .record-detail h2 { margin: 10px 0; font-size: 27px; }
+    .record-detail h3 { margin: 22px 0 8px; color: var(--green); font-size: 11px; letter-spacing: .5px; }
+    .record-text { white-space: pre-wrap; font-family: var(--serif); font-size: 14px; line-height: 1.9; }
+    .record-detail .feedback-box { padding: 16px; }
+    .record-empty { padding: 33px 20px; color: var(--muted); text-align: center; }
+    .overlay { position: fixed; inset: 0; z-index: 5; display: none; place-items: center; padding: 20px; background: rgba(31, 35, 29, .42); }
+    .overlay.active { display: grid; }
+    .modal { width: min(480px, 100%); padding: 30px; border-radius: 7px; background: var(--white); box-shadow: var(--shadow); }
+    .modal h2 { margin: 8px 0; font-size: 29px; }
+    .modal .question { color: #73756d; font-family: var(--serif); font-size: 14px; line-height: 1.8; }
+    .modal ol { padding-left: 20px; color: #73756d; font-family: var(--serif); font-size: 12px; line-height: 2; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 22px; }
+    footer { padding: 25px; border-top: 1px solid var(--line); color: #96968d; font-size: 10px; text-align: center; }
+
+    @media (max-width: 800px) {
+      .topbar { height: 66px; padding: 0 20px; }
+      .nav { gap: 18px; }
+      main { padding: 35px 20px 65px; }
+      .hero { grid-template-columns: 1fr; gap: 30px; padding-top: 8px; }
+      .hero-card { min-height: 290px; }
+      .writer-layout, .record-layout { grid-template-columns: 1fr; }
+      .prompt-panel { padding: 18px; }
+      .prompt-panel h2 { font-size: 22px; }
+      .prompt-list { grid-template-columns: 1fr 1fr; }
+      .topic-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 520px) {
+      .topbar { padding: 0 15px; }
+      .brand { font-size: 15px; }
+      .nav { gap: 12px; }
+      .nav button { font-size: 11px; }
+      .profile { display: none; }
+      main { padding: 28px 16px 55px; }
+      h1 { font-size: 41px; }
+      .hero-card { padding: 25px; }
+      .hero-card h2 { font-size: 25px; }
+      .stats-row { gap: 7px; margin-bottom: 42px; }
+      .stat { gap: 7px; padding: 12px 8px; }
+      .stat-icon { width: 28px; height: 28px; font-size: 12px; }
+      .stat strong { font-size: 17px; }
+      .stat span:last-child { font-size: 9px; }
+      .topic-grid { grid-template-columns: 1fr; }
+      .topic-card { min-height: 195px; }
+      .writer-actions { align-items: flex-start; }
+      .writer-actions .right-actions { gap: 6px; }
+      .button { padding: 0 13px; font-size: 12px; }
+      .prompt-list { grid-template-columns: 1fr; }
+      .writing-panel h2 { font-size: 25px; }
+      .recent-item { padding: 14px; }
+      .page-heading h1 { font-size: 37px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <button class="brand" data-view="home" aria-label="홈으로">
+        <span class="brand-mark">b</span><span>between <span>lines</span></span>
+      </button>
+      <nav class="nav" aria-label="주 메뉴">
+        <button class="active" data-view="home">오늘</button>
+        <button data-view="topics">주제 탐색</button>
+        <button data-view="records">내 기록</button>
+      </nav>
+      <div class="profile" aria-label="내 프로필">나</div>
+    </header>
+
+    <main>
+      <section id="home" class="view active">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow" id="today-label">A LITTLE WRITING, EVERY DAY</div>
+            <h1>오늘의 생각을<br><em>영어로 남겨요.</em></h1>
+            <p class="intro">좋은 글은 좋은 질문에서 시작돼요.<br>작은 질문을 따라가며 나만의 이야기를 한 문단으로 완성해 보세요.</p>
+            <button class="button" id="start-today">오늘의 글쓰기 시작 <span aria-hidden="true">↗</span></button>
+          </div>
+          <article class="hero-card" id="today-card"></article>
+        </div>
+        <div class="stats-row" id="stats"></div>
+        <section>
+          <div class="section-head">
+            <div><div class="eyebrow">YOUR NOTEBOOK</div><h2>다시 읽고 싶은 문장들</h2></div>
+            <button class="text-button" data-view="records">기록 모두 보기 →</button>
+          </div>
+          <div class="recent-list" id="recent-list"></div>
+        </section>
+      </section>
+
+      <section id="topics" class="view">
+        <div class="page-heading">
+          <div class="eyebrow">FIND YOUR NEXT STORY</div>
+          <h1>오늘은 어떤 이야기를<br>써 볼까요?</h1>
+          <p class="intro">철학과 사회를 일상의 경험에서부터 생각해 보는 질문들. 엄선한 30개 주제 중 10개를 매일 새롭게 만나요.</p>
+        </div>
+        <div class="filters" id="filters"></div>
+        <div class="topic-grid" id="topic-grid"></div>
+      </section>
+
+      <section id="writer" class="view">
+        <div class="writer-top">
+          <button class="back-link" data-view="home">← 오늘로 돌아가기</button>
+          <span class="save-state" id="save-state">자동 저장됨</span>
+        </div>
+        <div class="writer-layout">
+          <aside class="prompt-panel" id="prompt-panel"></aside>
+          <div class="writing-panel">
+            <div class="progress-row"><span id="progress-label"></span><span>편하게 건너뛰어도 좋아요</span></div>
+            <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="question-number" id="question-number"></div>
+            <h2 id="current-question"></h2>
+            <p class="writing-guidance">Write your thoughts in English. You can polish the grammar later.</p>
+            <textarea id="answer-input" placeholder="Start with a small detail..."></textarea>
+            <section class="dictionary" aria-label="English-Korean dictionary">
+              <div class="dictionary-heading">
+                <div><div class="eyebrow">ENGLISH → KOREAN</div><strong>Quick dictionary</strong></div>
+                <span>단어를 선택하거나 직접 입력하세요</span>
+              </div>
+              <div class="dictionary-search">
+                <input id="dictionary-input" type="search" placeholder="e.g. belonging, fairness" autocomplete="off">
+                <button class="button secondary small" id="dictionary-search-button" type="button">뜻 찾기</button>
+              </div>
+              <div class="dictionary-note">Lookup terms are sent to MyMemory to provide translations.</div>
+              <div class="dictionary-result" id="dictionary-result" aria-live="polite"></div>
+            </section>
+            <div class="writer-actions">
+              <button class="skip-button" id="skip-question">이 질문 건너뛰기 →</button>
+              <div class="right-actions">
+                <button class="button secondary small" id="prev-question">← 이전</button>
+                <button class="button small" id="next-question">다음 질문 →</button>
+              </div>
+            </div>
+            <div class="helper-box">✦ 작은 팁 &nbsp; 완벽한 문장보다 구체적인 장면 하나가 더 좋은 시작이에요.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="refine" class="view">
+        <div class="writer-top">
+          <button class="back-link" id="back-to-writer">← 질문 메모로</button>
+          <span class="save-state">원문은 따로 보관돼요</span>
+        </div>
+        <div class="refine-layout">
+          <div class="eyebrow">ONE STORY, IN YOUR WORDS</div>
+          <h1>이제 한 편의 글로<br>이어 볼까요?</h1>
+          <p class="intro">메모를 자연스러운 한 문단으로 다듬어 보세요. 반복되는 내용은 덜어내고, 당신만의 연결 문장을 더해도 좋아요.</p>
+          <details class="review-prompts"><summary>오늘의 질문 다시 보기</summary><ol id="review-questions"></ol></details>
+          <textarea id="paragraph-input" style="min-height: 280px" placeholder="Your story goes here..."></textarea>
+          <div class="word-count"><span id="word-count">0 words</span><span>한 문단이 아니어도 괜찮아요</span></div>
+          <button class="button" id="save-writing">글 저장하고 피드백 보기 ↗</button>
+          <div id="feedback-preview"></div>
+        </div>
+      </section>
+
+      <section id="records" class="view">
+        <div class="page-heading">
+          <div class="eyebrow">YOUR WORDS, YOUR GROWTH</div>
+          <h1>내가 써 온 이야기</h1>
+          <p class="intro">완성한 글은 이곳에 차곡차곡 쌓여요. 지난 글을 다시 읽으며 달라진 나를 발견해 보세요.</p>
+        </div>
+        <div class="record-layout">
+          <div class="record-list" id="record-list"></div>
+          <article class="record-detail" id="record-detail"><div class="record-empty">왼쪽에서 글을 선택하면<br>당신의 기록이 펼쳐져요.</div></article>
+        </div>
+      </section>
+    </main>
+    <footer>BETWEEN LINES &nbsp; · &nbsp; 작은 글쓰기가 쌓여 나만의 이야기가 됩니다.</footer>
+  </div>
+
+  <div class="overlay" id="topic-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal" id="modal-content"></div>
+  </div>
+
+  <script>
+    const topics = [
+      { id: "good-life", category: "철학과 삶", title: "좋은 삶은 어떤 삶일까?", main: "성공한 삶과 좋은 삶은 같은 뜻일까요? 당신이 생각하는 좋은 삶을 이야기해 보세요.", questions: ["최근에 '이 순간은 좋았다'고 느낀 때는 언제였나요?", "그 순간에 있었던 것은 성취, 사람, 여유 중 무엇과 가까웠나요?", "다른 사람의 기대가 내 선택에 영향을 준 적이 있나요?", "성공을 조금 덜 중요하게 여긴다면 무엇이 달라질까요?", "당신에게 좋은 삶을 한 문장으로 설명한다면 무엇인가요?"] },
+      { id: "fairness", category: "사회와 공동체", title: "공정함의 기준", main: "모두를 똑같이 대하는 것과 각자에게 필요한 것을 주는 것 중, 무엇이 더 공정할까요?", questions: ["학교나 일터에서 공정하다고 느꼈던 작은 장면을 떠올려 보세요.", "그 장면에서 사람들은 어떤 기준으로 대우받았나요?", "같은 규칙이 사람마다 다른 결과를 만들 수도 있을까요?", "공정한 결정을 내리기 어려운 이유는 무엇일까요?", "내가 속한 공동체에서 바꾸고 싶은 기준이 있나요?"] },
+      { id: "identity", category: "인간과 정체성", title: "나는 변해도 나일까?", main: "생각과 취향이 크게 달라진 뒤에도 우리는 여전히 같은 사람일까요?", questions: ["예전과 달라진 생각이나 습관 하나를 떠올려 보세요.", "그 변화를 만든 경험이나 사람이 있었나요?", "변하지 않은 나의 모습이 있다면 무엇인가요?", "기억을 잃거나 새로운 환경에서 자란다면 나는 얼마나 달라질까요?", "나를 나답게 만드는 것은 기억, 관계, 선택 중 무엇에 가까운가요?"] },
+      { id: "work", category: "사회와 공동체", title: "일은 왜 중요할까?", main: "생계를 위한 일이 아니라면, 사람들은 어떤 일을 계속하고 싶어 할까요?", questions: ["당신이 시간을 잊을 만큼 몰입했던 활동이 있나요?", "그 활동에서 보람을 느낀 이유는 무엇인가요?", "돈, 인정, 자유, 도움 중 일에서 가장 중요한 것은 무엇인가요?", "사회가 더 존중해야 할 일은 어떤 일일까요?", "일하지 않는 시간에도 사람의 가치는 달라지지 않을까요?"] },
+      { id: "attention", category: "기술과 일상", title: "내 주의력은 누구의 것일까?", main: "하루 동안 무엇을 보고 듣는지가 나를 만든다면, 나의 주의력은 누구에게 가장 많이 쓰이고 있나요?", questions: ["오늘 가장 오래 바라본 화면이나 장면은 무엇이었나요?", "그것을 선택한 건 나였나요, 아니면 습관에 가까웠나요?", "주의를 빼앗겨 놓친 사람이나 순간이 있었나요?", "주의력을 다시 내가 원하는 곳에 쓴다면 어디에 쓰고 싶나요?", "기술이 우리의 시간을 존중하려면 어떤 모습이어야 할까요?"] },
+      { id: "belonging", category: "인간과 관계", title: "어디에서 소속감을 느낄까?", main: "어떤 장소나 사람들 사이에서 '여기서는 나답게 있어도 괜찮다'고 느끼나요?", questions: ["그런 느낌이 들었던 작은 장면을 하나 떠올려 보세요.", "그곳의 사람들은 어떤 말이나 행동을 했나요?", "소속감을 느끼기 위해 나를 바꾸어야 했던 적도 있나요?", "서로 다른 사람들이 함께 편안하려면 무엇이 필요할까요?", "당신은 다른 사람에게 그런 공간을 만들어 준 적이 있나요?"] },
+      { id: "memory", category: "인문과 기억", title: "기억은 과거를 그대로 보여줄까?", main: "오래된 기억을 떠올릴 때, 우리는 과거를 기억하는 걸까요 아니면 지금의 마음으로 다시 쓰는 걸까요?", questions: ["자주 떠올리는 장면 하나를 골라 어떤 모습인지 적어 보세요.", "그 기억을 떠올릴 때마다 달라지는 부분이 있나요?", "그 기억을 함께한 사람은 같은 일을 어떻게 기억할까요?", "기억이 사실과 조금 달라도 우리에게 의미가 있을까요?", "나중의 내가 오늘을 기억한다면 무엇을 기억해 주면 좋겠나요?"] },
+      { id: "rules", category: "철학과 삶", title: "규칙을 어기는 용기", main: "규칙을 지키는 것이 옳지 않다고 느껴질 때, 사람은 어떻게 해야 할까요?", questions: ["규칙이 누군가를 보호해 준 사례를 떠올려 보세요.", "반대로 규칙이 불공평하게 느껴진 상황은 무엇인가요?", "규칙을 따르지 않을 때 누가 영향을 받게 될까요?", "옳다고 믿는 일과 책임지는 일은 어떻게 함께할 수 있을까요?", "당신이 바꾸고 싶은 규칙이 있다면 어떤 방식으로 시작할까요?"] },
+      { id: "progress", category: "사회와 미래", title: "발전은 누구에게 좋은 걸까?", main: "새로운 기술이나 변화가 세상을 더 편리하게 만들 때, 그 혜택은 모두에게 똑같이 돌아갈까요?", questions: ["최근 편리해졌다고 느낀 변화 하나를 떠올려 보세요.", "그 변화로 가장 큰 도움을 받은 사람은 누구일까요?", "그 변화 때문에 더 어려워진 사람이나 일이 있을까요?", "편리함과 인간다운 삶이 충돌한다면 무엇을 먼저 생각해야 할까요?", "더 나은 발전을 위해 사회가 물어야 할 질문은 무엇인가요?"] },
+      { id: "silence", category: "인문과 관계", title: "말하지 않는 것도 하나의 말일까?", main: "어떤 순간에는 말하는 것보다 침묵하는 편이 더 많은 것을 전할 수 있을까요?", questions: ["말을 아꼈거나 침묵했던 순간을 떠올려 보세요.", "그때 말하지 않은 이유는 무엇이었나요?", "상대방은 그 침묵을 어떻게 받아들였을까요?", "침묵이 배려가 되는 경우와 상처가 되는 경우는 어떻게 다를까요?", "다음에 비슷한 순간이 온다면 어떤 선택을 하고 싶나요?"] },
+      { id: "freedom", category: "철학과 삶", title: "선택지가 많을수록 자유로울까?", main: "선택할 수 있는 것이 많아질수록 우리는 더 자유로워질까요, 아니면 결정하기 더 어려워질까요?", questions: ["최근 선택하기 어려웠던 일을 하나 떠올려 보세요.", "선택지가 많다는 점은 어떤 도움과 부담을 주었나요?", "선택하지 않은 길을 아쉬워하는 마음은 자유와 어떤 관계가 있을까요?", "누군가 선택의 범위를 정해 주면 오히려 편해지는 경우도 있을까요?", "당신에게 자유란 선택의 수와 선택의 책임 중 무엇에 가까운가요?"] },
+      { id: "privacy", category: "기술과 사회", title: "편리함과 사생활의 경계", main: "더 편리한 서비스를 위해 나의 정보를 제공하는 일은 어디까지 괜찮을까요?", questions: ["편리함 때문에 개인정보 제공에 동의했던 경험이 있나요?", "그때 무엇을 알고 동의했으며, 무엇은 알기 어려웠나요?", "개인의 선택만으로 사생활을 지킬 수 없는 이유는 무엇일까요?", "기업이나 사회는 정보 사용을 어떻게 설명해야 할까요?", "당신이 지키고 싶은 디지털 생활의 경계는 무엇인가요?"] },
+      { id: "care", category: "사회와 공동체", title: "돌봄은 누구의 책임일까?", main: "아이와 노인, 아픈 사람을 돌보는 일은 개인과 가족, 사회 중 누가 함께 책임져야 할까요?", questions: ["일상에서 누군가의 돌봄이 필요했던 장면을 떠올려 보세요.", "돌봄을 맡은 사람은 어떤 도움을 받았나요?", "돌봄 노동이 눈에 잘 띄지 않는 이유는 무엇일까요?", "가족의 사랑과 사회의 책임은 어떻게 함께할 수 있을까요?", "돌봄을 더 공정하게 나누기 위해 무엇이 바뀌어야 할까요?"] },
+      { id: "language", category: "인문과 사회", title: "말은 세상을 어떻게 나눌까?", main: "우리가 어떤 이름을 붙이는 방식은 사람과 사물을 바라보는 생각을 바꿀까요?", questions: ["최근 새롭게 알게 된 단어나 표현이 있나요?", "그 말을 알기 전과 후에 무엇이 다르게 보였나요?", "같은 사람이나 상황을 다르게 부르면 어떤 영향이 생길까요?", "모든 경험을 말로 정확히 설명할 수 있을까요?", "더 신중하게 사용하고 싶은 표현이 있다면 무엇인가요?"] },
+      { id: "public-space", category: "사회와 공동체", title: "모두의 공간은 누구를 위한 곳일까?", main: "공원이나 도서관처럼 누구나 이용하는 공간은 누구의 필요를 먼저 고려해야 할까요?", questions: ["당신이 자주 이용하는 공공장소 하나를 떠올려 보세요.", "그곳에서 편안한 사람과 불편한 사람은 각각 누구일까요?", "서로 다른 필요가 부딪힐 때 어떤 기준으로 결정해야 할까요?", "공공장소의 규칙은 누구의 목소리를 반영하고 있나요?", "우리 동네에 새 공간을 만든다면 무엇을 가장 먼저 고려하겠어요?"] },
+      { id: "truth", category: "철학과 삶", title: "진실을 말하는 것이 언제나 옳을까?", main: "진실을 말하는 일과 누군가를 배려하는 일이 충돌한다면 무엇을 먼저 생각해야 할까요?", questions: ["솔직한 말이 도움이 되었던 순간을 떠올려 보세요.", "같은 진실도 말하는 방식에 따라 다르게 들릴까요?", "침묵하거나 일부만 말하는 것이 책임 있는 선택일 때도 있을까요?", "상대의 감정과 알 권리를 함께 존중하려면 무엇이 필요할까요?", "당신이 생각하는 정직함은 사실을 말하는 것 외에 무엇을 포함하나요?"] },
+      { id: "future-generation", category: "사회와 미래", title: "아직 태어나지 않은 사람에게 책임이 있을까?", main: "미래 세대가 겪을 문제를 위해 지금의 우리는 무엇을 포기하거나 바꿔야 할까요?", questions: ["지금의 선택이 미래에 영향을 줄 수 있는 문제 하나를 떠올려 보세요.", "그 문제에서 오늘의 편리함과 미래의 부담은 어떻게 연결되나요?", "아직 만나지 못한 사람에 대한 책임은 어디에서 시작될까요?", "개인의 실천과 제도의 변화 중 무엇이 더 큰 역할을 할까요?", "미래의 사람이 지금 우리에게 고맙다고 말한다면 무엇 때문일까요?"] },
+      { id: "belonging-cost", category: "인간과 관계", title: "소속되기 위해 무엇을 감추게 될까?", main: "어떤 집단에 속하기 위해 자신의 일부를 감추거나 바꾸는 일은 언제 괜찮고, 언제 힘든 일이 될까요?", questions: ["어떤 자리에서 말투나 행동을 조금 바꾸었던 경험이 있나요?", "그 변화는 편안함을 위한 선택이었나요, 기대에 맞추기 위한 것이었나요?", "다름을 환영하는 공동체는 어떤 행동으로 그것을 보여 줄까요?", "모두에게 완전히 솔직해지는 일이 늘 가능한가요?", "당신이 만들고 싶은 공동체에서는 어떤 모습도 숨기지 않아도 될까요?"] },
+      { id: "attention-economy", category: "기술과 사회", title: "관심은 왜 상품이 되었을까?", main: "온라인에서 우리의 관심과 시간이 상품처럼 다뤄진다면, 그 대가로 우리는 무엇을 얻고 잃을까요?", questions: ["오늘 온라인에서 시간을 오래 보낸 콘텐츠는 무엇이었나요?", "그 콘텐츠가 계속 눈앞에 나타난 이유는 무엇일까요?", "관심을 얻으려는 경쟁은 대화와 뉴스에 어떤 영향을 줄까요?", "사용자도 플랫폼도 책임을 나눠야 한다면 각각 무엇을 할 수 있을까요?", "내 관심을 더 의식적으로 사용하는 방법은 무엇인가요?"] },
+      { id: "merit", category: "사회와 공동체", title: "성취는 정말 개인의 노력만으로 이루어질까?", main: "성공을 개인의 노력으로 설명할 때, 우리는 어떤 조건과 도움을 보지 못하게 될까요?", questions: ["당신이 노력해서 이룬 일 하나를 떠올려 보세요.", "그 과정에서 도움을 준 사람이나 환경은 무엇이었나요?", "출발점이 다른 사람을 같은 기준으로 평가하면 어떤 일이 생길까요?", "개인의 노력과 사회적 조건을 함께 인정하는 방법은 무엇일까요?", "성취를 축하하면서도 공정함을 지키려면 어떤 시선이 필요할까요?"] },
+      { id: "trust", category: "인간과 관계", title: "신뢰는 어떻게 만들어질까?", main: "한 사람이나 사회를 믿게 만드는 것은 말일까요, 반복되는 행동일까요?", questions: ["누군가를 믿게 되었던 구체적인 순간을 떠올려 보세요.", "그 사람의 어떤 행동이 신뢰를 만들었나요?", "한 번의 실수는 오랜 신뢰를 얼마나 바꿀 수 있을까요?", "서로 모르는 사람들이 함께 살아가려면 어떤 제도적 신뢰가 필요할까요?", "신뢰를 다시 쌓기 위해 가장 먼저 필요한 것은 무엇인가요?"] },
+      { id: "education", category: "사회와 공동체", title: "배움의 목적은 무엇일까?", main: "교육은 좋은 직업을 얻기 위한 준비일까요, 세상을 이해하고 살아가는 힘을 기르는 일일까요?", questions: ["학교 밖에서 오래 기억에 남은 배움의 순간을 떠올려 보세요.", "그때 무엇이 배우고 싶다는 마음을 만들었나요?", "시험이나 평가가 배움을 돕는 점과 방해하는 점은 무엇인가요?", "사회가 모두에게 보장해야 할 배움은 어떤 것일까요?", "앞으로 배우고 싶은 것을 스스로 선택한다면 무엇인가요?"] },
+      { id: "conflict", category: "사회와 관계", title: "갈등은 꼭 해결해야 할까?", main: "갈등을 빨리 없애는 것과 서로 다른 입장을 충분히 드러내는 것 중 무엇이 더 중요할까요?", questions: ["최근 의견이 달랐던 상황을 하나 떠올려 보세요.", "각자의 입장 뒤에는 어떤 필요나 두려움이 있었나요?", "갈등을 피하면 당장은 편하지만 나중에 어떤 일이 생길 수 있을까요?", "모든 갈등에 타협이 가능한 것은 아니라면 어떻게 대화해야 할까요?", "좋은 해결이란 모두가 동의하는 것일까요, 서로를 이해하는 것일까요?"] },
+      { id: "art", category: "인문과 예술", title: "예술은 무엇을 바꿀 수 있을까?", main: "한 편의 영화나 책, 음악이 세상을 바라보는 방식을 바꾼 적이 있나요?", questions: ["오래 기억에 남은 작품이나 장면을 하나 떠올려 보세요.", "그 작품은 어떤 감정이나 질문을 남겼나요?", "예술은 현실을 있는 그대로 보여줘야 할까요, 다르게 상상하게 해야 할까요?", "같은 작품을 사람마다 다르게 해석하는 것은 왜 중요할까요?", "오늘의 사회가 예술을 필요로 하는 이유는 무엇인가요?"] },
+      { id: "consumption", category: "사회와 일상", title: "우리는 왜 더 많이 가지려 할까?", main: "물건을 사는 선택은 정말 개인의 취향일까요, 사회가 원하는 삶의 모습을 따라가는 일일까요?", questions: ["최근 꼭 필요하지 않았지만 사고 싶었던 물건을 떠올려 보세요.", "그 물건이 줄 것이라 기대한 것은 편리함, 즐거움, 인정 중 무엇이었나요?", "광고나 주변 사람의 선택은 내 욕구에 어떤 영향을 주나요?", "덜 소비하는 삶을 선택하기 어렵게 만드는 조건은 무엇일까요?", "소유보다 중요하게 여기고 싶은 가치는 무엇인가요?"] },
+      { id: "equality", category: "사회와 공동체", title: "모두가 같은 기회를 가진다는 것은?", main: "기회의 문이 모두에게 열려 있다면, 그것만으로 사회는 공평하다고 할 수 있을까요?", questions: ["기회가 주어졌지만 실제로 이용하기 어려웠던 상황을 떠올려 보세요.", "그 기회를 활용하려면 어떤 자원이나 지원이 필요했나요?", "같은 규칙이 서로 다른 출발점을 충분히 고려할 수 있을까요?", "결과의 차이를 개인의 선택으로만 설명할 때 놓치는 것은 무엇인가요?", "당신이 생각하는 공정한 기회는 어떤 모습인가요?"] },
+      { id: "home", category: "인간과 사회", title: "집은 공간일까, 권리일까?", main: "집을 소유하는 일과 안전하게 머물 곳을 갖는 일은 어떻게 다를까요?", questions: ["당신에게 편안한 집의 조건을 떠올려 보세요.", "그 조건 중 물리적인 공간과 정서적인 안정은 각각 무엇인가요?", "안정된 거처를 개인의 능력만으로 마련하기 어려운 이유는 무엇일까요?", "주거를 권리로 본다면 사회는 어떤 책임을 져야 할까요?", "사람들이 집에서 존엄과 안전을 느끼려면 무엇이 필요할까요?"] },
+      { id: "responsibility", category: "철학과 삶", title: "모르는 사이에도 책임이 생길까?", main: "직접 의도하지 않았더라도 나의 선택이 누군가에게 영향을 준다면, 나는 어디까지 책임져야 할까요?", questions: ["평소 무심코 하는 선택이 다른 사람에게 영향을 주는 예를 생각해 보세요.", "그 영향에 대해 얼마나 알고 있었나요?", "좋은 의도가 있었는데도 결과가 해로웠다면 무엇을 해야 할까요?", "개인의 책임과 제도의 책임은 어떤 방식으로 나뉠 수 있을까요?", "책임을 인정한다는 것은 사과 외에 어떤 행동을 포함할까요?"] },
+      { id: "loneliness", category: "인간과 관계", title: "연결되어 있는데 왜 외로울까?", main: "사람들과 늘 연결되어 있어도 외로움을 느끼는 이유는 무엇일까요?", questions: ["사람들 사이에 있었지만 혼자라고 느낀 순간이 있나요?", "그때 당신에게 필요했던 연결은 어떤 모습이었나요?", "연락의 빈도와 서로 이해받는 느낌은 어떻게 다를까요?", "외로움을 개인의 문제로만 보면 놓치는 사회적 조건은 무엇일까요?", "누군가의 외로움을 알아차리기 위해 우리는 무엇을 할 수 있을까요?"] },
+      { id: "public-good", category: "사회와 공동체", title: "공동의 이익은 누구의 이익일까?", main: "사회 전체에 도움이 된다는 결정이 일부 사람에게 큰 부담을 준다면, 그것을 공동의 이익이라고 부를 수 있을까요?", questions: ["공동체를 위해 개인이 양보했던 사례를 생각해 보세요.", "그 양보의 비용은 누구에게 가장 크게 돌아갔나요?", "다수의 편의가 소수의 권리와 충돌할 때 어떤 기준이 필요할까요?", "결정의 영향을 받는 사람은 어떻게 논의에 참여해야 할까요?", "당신이 생각하는 진정한 공동의 이익은 무엇인가요?"] }
+    ];
+    const topicsPerDay = 10;
+    const englishPrompts = {
+      "good-life": ["What makes a life good? Is it the same as a successful life?", ["When was a recent moment when you felt, “This is good”?", "Was that moment more about achievement, people, or having time to yourself?", "Have other people's expectations influenced one of your choices?", "What might change if success mattered a little less to you?", "How would you describe a good life in one sentence?"]],
+      fairness: ["Is it fairer to treat everyone equally, or to give people what they need?", ["Think of a small moment at school or work that felt fair to you.", "What standard was used to treat people in that situation?", "Can the same rule lead to different outcomes for different people?", "Why can it be difficult to make a fair decision?", "What standard would you change in a community you belong to?"]],
+      identity: ["If our thoughts and preferences change, are we still the same person?", ["Name one belief or habit that has changed over time.", "Was there an experience or person that helped bring about that change?", "What part of you has stayed the same?", "How different might you be if you had lost your memories or grown up elsewhere?", "What makes you who you are: memory, relationships, or choices?"]],
+      work: ["If work were not necessary for a living, what kind of work would people still choose to do?", ["What activity has made you lose track of time?", "What made that activity feel meaningful?", "Which matters most in work: money, recognition, freedom, or helping others?", "What kind of work should society value more?", "Does a person's worth change when they are not working?"]],
+      attention: ["If what we watch and listen to shapes us, who gets most of our attention?", ["What screen or scene held your attention the longest today?", "Did you choose it deliberately, or was it more of a habit?", "Was there a person or moment you missed because your attention was elsewhere?", "Where would you like to direct your attention instead?", "What would it mean for technology to respect our time?"]],
+      belonging: ["Where do you feel that you can be yourself and still belong?", ["Recall a small moment when you felt that way.", "What did people there say or do?", "Have you ever felt you needed to change yourself to belong?", "What helps people with differences feel comfortable together?", "Have you ever created that kind of space for someone else?"]],
+      memory: ["When we recall the past, do we remember it as it was, or rewrite it through how we feel now?", ["Describe a scene you often remember.", "Does any part of that memory change each time you recall it?", "How might someone else who was there remember the same event?", "Can a memory matter even if some details are inaccurate?", "What do you hope your future self remembers about today?"]],
+      rules: ["What should we do when following a rule feels wrong?", ["Think of a rule that has protected someone.", "Can you recall a rule that felt unfair?", "Who might be affected if someone breaks that rule?", "How can we act on what we believe is right while taking responsibility?", "If you could change a rule, how would you begin?"]],
+      progress: ["When technology makes life more convenient, do its benefits reach everyone equally?", ["What recent change has made something more convenient for you?", "Who has benefited most from that change?", "Who or what might have become more difficult to access?", "If convenience conflicts with human dignity, what should we consider first?", "What question should society ask before calling something progress?"]],
+      silence: ["Can silence sometimes communicate more than words?", ["Recall a moment when you chose not to speak.", "Why did you stay silent?", "How do you think the other person understood your silence?", "How is silence different when it shows care rather than causes hurt?", "What might you choose to do in a similar moment next time?"]],
+      freedom: ["Do more choices make us freer, or make decisions harder?", ["Think of a recent decision that was difficult to make.", "How did having many options help or burden you?", "How is regret about an unchosen path related to freedom?", "Can limits sometimes make it easier to choose?", "Is freedom more about having options or taking responsibility for a choice?"]],
+      privacy: ["How much personal information is it reasonable to exchange for convenience?", ["Recall a time you shared personal information to use a convenient service.", "What did you know when you agreed, and what was hard to know?", "Why can't individuals protect their privacy through personal choices alone?", "How should companies and society explain the use of personal data?", "What boundary would you like to set for your digital life?"]],
+      care: ["Who should share responsibility for caring for children, older people, and those who are ill?", ["Recall a moment when someone needed care in everyday life.", "What support did the person providing care receive?", "Why is care work often difficult to see?", "How can family care and society's responsibility work together?", "What would need to change to share care more fairly?"]],
+      language: ["Can the words we use change how we see people and the world?", ["What is a word or expression you learned recently?", "What did you see differently after learning it?", "What can happen when we describe the same person or situation in different ways?", "Can every experience be explained precisely in words?", "What expression would you like to use more thoughtfully?"]],
+      "public-space": ["Who should public spaces, such as parks and libraries, be designed for first?", ["Think of a public place you often use.", "Who feels comfortable there, and who might not?", "What standard should guide decisions when people's needs conflict?", "Whose voices shape the rules of that public space?", "What would you consider first when creating a new neighborhood space?"]],
+      truth: ["When telling the truth conflicts with caring for someone, what should we consider first?", ["Recall a moment when honesty helped someone.", "Can the same truth feel different depending on how it is said?", "Can silence or partial disclosure ever be a responsible choice?", "What helps us respect both someone's feelings and their right to know?", "What does honesty involve beyond stating facts?"]],
+      "future-generation": ["What should we change or give up today for people who will live in the future?", ["Name an issue where today's choices may affect the future.", "How are today's convenience and tomorrow's burdens connected?", "Where does our responsibility to people we will never meet begin?", "Which matters more: individual action or changes to public systems?", "What might future generations thank us for?"]],
+      "belonging-cost": ["When is changing or hiding part of yourself to belong acceptable, and when does it become harmful?", ["Recall a time you changed how you spoke or acted in a group.", "Was it your choice for comfort, or an attempt to meet expectations?", "How can a community show that it welcomes differences?", "Is it always possible to be completely open with everyone?", "What kind of community would let you feel you had nothing to hide?"]],
+      "attention-economy": ["If our time and attention are treated as products online, what do we gain and lose?", ["What online content held your attention for a long time today?", "Why do you think it kept appearing in front of you?", "How does competition for attention affect conversations and news?", "What responsibilities should users and platforms each take?", "How could you use your attention more deliberately?"]],
+      merit: ["When we explain success through personal effort, what support and circumstances do we overlook?", ["Think of something you achieved through effort.", "Who or what supported you along the way?", "What happens when we judge people by the same standard despite unequal starting points?", "How can we recognize both personal effort and social conditions?", "How can we celebrate achievement while still considering fairness?"]],
+      trust: ["Is trust built more by what people say or by what they repeatedly do?", ["Recall a specific moment when you began to trust someone.", "What action helped create that trust?", "How much can one mistake change trust built over time?", "What forms of institutional trust help strangers live together?", "What is the first thing needed to rebuild trust?"]],
+      education: ["Is education mainly preparation for a job, or a way to understand the world and live well?", ["Recall a meaningful learning moment outside school.", "What made you want to learn at that time?", "How can tests and grades support learning, and how can they get in its way?", "What kinds of learning should society make available to everyone?", "If you could choose what to learn next, what would it be?"]],
+      conflict: ["Is it more important to end conflict quickly or to make room for different perspectives?", ["Recall a recent situation where people disagreed.", "What needs or fears might have been behind each position?", "What can happen when we avoid conflict to feel comfortable in the moment?", "How can we talk when compromise is not possible?", "Does a good resolution require agreement, or can understanding be enough?"]],
+      art: ["Has a book, film, or piece of music ever changed how you see the world?", ["Recall a work of art or a scene that stayed with you.", "What feeling or question did it leave behind?", "Should art show reality as it is, or help us imagine it differently?", "Why does it matter that people interpret the same work differently?", "Why might society need art today?"]],
+      consumption: ["Are our purchases purely personal choices, or are they shaped by society's idea of a good life?", ["Think of something you recently wanted but did not truly need.", "What did you expect it to bring: convenience, pleasure, or recognition?", "How do advertising and other people's choices shape what we want?", "What conditions make it difficult to choose a life with less consumption?", "What value would you like to place above owning more?"]],
+      equality: ["If the door of opportunity is open to everyone, is society fair by itself?", ["Recall a time when an opportunity existed but was difficult to use.", "What resources or support would have helped you take it?", "Can the same rules account for different starting points?", "What do we miss when we explain different outcomes only through personal choices?", "What does a fair opportunity look like to you?"]],
+      home: ["What is the difference between owning a home and having a safe place to live?", ["Describe what makes a home feel comfortable to you.", "Which parts are about physical space, and which are about emotional safety?", "Why can stable housing be difficult to secure through individual effort alone?", "If housing is a right, what responsibilities does society have?", "What helps people feel safe and respected where they live?"]],
+      responsibility: ["If our choices affect others even when we do not intend them to, how far does our responsibility extend?", ["Think of an everyday choice that may affect someone else.", "How much did you know about its effects?", "What should we do when good intentions lead to harmful results?", "How can responsibility be shared between individuals and institutions?", "Beyond apologizing, what actions show that someone accepts responsibility?"]],
+      loneliness: ["Why can people feel lonely even when they are constantly connected to others?", ["Recall a time you felt alone while surrounded by people.", "What kind of connection did you need in that moment?", "How is frequent contact different from feeling understood?", "What social conditions do we overlook when we treat loneliness only as a personal problem?", "How can we notice and respond to someone else's loneliness?"]],
+      "public-good": ["If a decision benefits society but places a heavy burden on some people, is it truly for the common good?", ["Think of a time someone gave something up for a community.", "Who carried most of the cost of that sacrifice?", "What should guide decisions when majority convenience conflicts with minority rights?", "How should people affected by a decision take part in making it?", "What does the common good mean to you?"]]
+    };
+    const storageKey = "between-lines-records-v1";
+    const draftKey = "between-lines-draft-v1";
+    let records = loadRecords();
+    let draft = loadDraft();
+    let activeTopic = null;
+    let currentStep = 0;
+    let selectedRecordId = null;
+    let activeFilter = "모두 보기";
+    let dictionaryLookupTimer = null;
+    let dictionaryRequestId = 0;
+
+    function loadRecords() {
+      try { return JSON.parse(localStorage.getItem(storageKey) || "[]"); }
+      catch (error) { console.error("Could not load saved writing records.", error); return []; }
+    }
+    function loadDraft() {
+      try { return JSON.parse(localStorage.getItem(draftKey) || "{}"); }
+      catch (error) { console.error("Could not load your draft.", error); return {}; }
+    }
+    function persistRecords() { localStorage.setItem(storageKey, JSON.stringify(records)); }
+    function persistDraft() {
+      if (!activeTopic) return;
+      draft[activeTopic.id] = { answers: [...(draft[activeTopic.id]?.answers || [])], step: currentStep };
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+    }
+    function todayTopic() {
+      return getDailyTopics()[0];
+    }
+    function getPrompt(topic) {
+      const prompt = englishPrompts[topic.id];
+      return prompt ? { main: prompt[0], questions: prompt[1] } : { main: topic.main, questions: topic.questions };
+    }
+    function getDayIndex() {
+      const localMidnight = new Date();
+      localMidnight.setHours(0, 0, 0, 0);
+      return Math.floor(localMidnight.getTime() / 86400000);
+    }
+    function getDailyTopics() {
+      const start = (getDayIndex() * topicsPerDay) % topics.length;
+      return Array.from({ length: Math.min(topicsPerDay, topics.length) }, (_, index) =>
+        topics[(start + index) % topics.length]);
+    }
+    function scheduleDailyRefresh() {
+      const nextMidnight = new Date();
+      nextMidnight.setHours(24, 0, 1, 0);
+      window.setTimeout(() => {
+        const activeView = document.querySelector(".view.active")?.id;
+        if (activeView === "home") renderHome();
+        if (activeView === "topics") renderTopics();
+        scheduleDailyRefresh();
+      }, nextMidnight.getTime() - Date.now());
+    }
+    function prettyDate(value) {
+      return new Intl.DateTimeFormat("ko-KR", { year: "numeric", month: "long", day: "numeric" }).format(new Date(value));
+    }
+    function getDateKey(value = new Date()) {
+      return `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`;
+    }
+    function countWords(text) { return text.trim() ? text.trim().split(/\s+/).length : 0; }
+    function showView(id) {
+      document.querySelectorAll(".view").forEach(view => view.classList.toggle("active", view.id === id));
+      document.querySelectorAll(".nav button").forEach(button => button.classList.toggle("active", button.dataset.view === id));
+      if (id === "home") renderHome();
+      if (id === "topics") renderTopics();
+      if (id === "records") renderRecords();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    function renderHome() {
+      const topic = todayTopic();
+      const date = new Date();
+      document.getElementById("today-label").textContent = new Intl.DateTimeFormat("en", { weekday: "long", month: "long", day: "numeric" }).format(date).toUpperCase();
+      document.getElementById("today-card").innerHTML = `
+        <div class="card-top"><div class="card-label">TODAY'S PROMPT &nbsp; · &nbsp; ${topic.category.toUpperCase()}</div>
+          <h2>${topic.title}</h2><div class="question">${getPrompt(topic).main}</div></div>
+        <div class="card-bottom"><span>약 10분 &nbsp;·&nbsp; 질문 ${topic.questions.length}개</span><button class="button small" onclick="openTopic('${topic.id}')">주제 살펴보기 ↗</button></div>`;
+      const streak = calculateStreak();
+      document.getElementById("stats").innerHTML = `
+        <div class="stat"><span class="stat-icon">✎</span><div><strong>${records.length}</strong><span>완성한 글</span></div></div>
+        <div class="stat"><span class="stat-icon">▤</span><div><strong>${streak}</strong><span>이어 쓴 날</span></div></div>
+        <div class="stat"><span class="stat-icon">Aa</span><div><strong>${records.reduce((sum, item) => sum + countWords(item.original), 0)}</strong><span>내가 쓴 단어</span></div></div>`;
+      const recent = [...records].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 3);
+      const recentList = document.getElementById("recent-list");
+      recentList.innerHTML = recent.length ? recent.map(item => `
+        <div class="recent-item" onclick="openRecord('${item.id}')">
+          <div><div class="recent-title">${escapeHtml(item.topicTitle)}</div><div class="recent-meta">${prettyDate(item.date)} &nbsp;·&nbsp; ${countWords(item.original)} words</div></div>
+          <span class="status-pill">나의 기록 →</span>
+        </div>`).join("") : `<div class="empty-state">아직 완성한 글이 없어요. 오늘의 질문으로 첫 이야기를 시작해 보세요.</div>`;
+    }
+    function calculateStreak() {
+      const days = new Set(records.map(item => getDateKey(new Date(item.date))));
+      let cursor = new Date();
+      if (!days.has(getDateKey(cursor))) cursor.setDate(cursor.getDate() - 1);
+      let count = 0;
+      while (days.has(getDateKey(cursor))) { count++; cursor.setDate(cursor.getDate() - 1); }
+      return count;
+    }
+    function renderTopics() {
+      const dailyTopics = getDailyTopics();
+      const dailyCategories = ["모두 보기", ...new Set(dailyTopics.map(topic => topic.category))];
+      if (!dailyCategories.includes(activeFilter)) activeFilter = "모두 보기";
+      document.getElementById("filters").innerHTML = dailyCategories.map(category =>
+        `<button class="filter ${activeFilter === category ? "active" : ""}" onclick="setFilter('${category}')">${category}</button>`).join("");
+      const visible = activeFilter === "모두 보기" ? dailyTopics : dailyTopics.filter(topic => topic.category === activeFilter);
+      document.getElementById("topic-grid").innerHTML = visible.map(topic => `
+        <button class="topic-card" onclick="openTopic('${topic.id}')">
+          <span class="category">${topic.category.toUpperCase()}</span><h3>${topic.title}</h3><p>${getPrompt(topic).main}</p>
+          <span class="topic-foot"><span>질문 ${topic.questions.length}개</span><span>약 10분 &nbsp; ↗</span></span>
+        </button>`).join("");
+    }
+    function setFilter(category) { activeFilter = category; renderTopics(); }
+    function openTopic(id) {
+      const topic = topics.find(item => item.id === id);
+      if (!topic) return;
+      activeTopic = topic;
+      const saved = draft[id] || {};
+      const answers = saved.answers || [];
+      document.getElementById("modal-content").innerHTML = `
+        <div class="eyebrow">${topic.category.toUpperCase()} &nbsp; · &nbsp; 약 10분</div>
+        <h2 id="modal-title">${topic.title}</h2>
+        <p class="question">${getPrompt(topic).main}</p>
+        <ol>${getPrompt(topic).questions.slice(0, 3).map(question => `<li>${question}</li>`).join("")}<li>... and your own conclusion</li></ol>
+        <div class="modal-actions"><button class="button secondary small" onclick="closeModal()">다른 주제 보기</button><button class="button small" onclick="startWriting('${id}')">${answers.some(Boolean) ? "이어서 쓰기" : "이 주제로 쓰기"} ↗</button></div>`;
+      document.getElementById("topic-modal").classList.add("active");
+    }
+    function closeModal() { document.getElementById("topic-modal").classList.remove("active"); }
+    function startWriting(id) {
+      closeModal();
+      activeTopic = topics.find(item => item.id === id);
+      if (!activeTopic) return;
+      const saved = draft[id] || {};
+      currentStep = Math.min(saved.step || 0, activeTopic.questions.length - 1);
+      renderWriter();
+      showView("writer");
+    }
+    function renderWriter() {
+      const answers = draft[activeTopic.id]?.answers || [];
+      const prompt = getPrompt(activeTopic);
+      document.getElementById("prompt-panel").innerHTML = `
+        <div class="eyebrow">${activeTopic.category.toUpperCase()}</div>
+        <h2>${activeTopic.title}</h2><p>${prompt.main}</p>
+        <div class="prompt-list">${prompt.questions.map((question, index) => `
+          <div class="prompt-step ${index === currentStep ? "active" : ""} ${answers[index]?.trim() ? "done" : ""}" onclick="goToStep(${index})">
+            <span class="step-num">${answers[index]?.trim() ? "✓" : index + 1}</span><span>${question}</span>
+          </div>`).join("")}</div>`;
+      document.getElementById("question-number").textContent = `QUESTION ${String(currentStep + 1).padStart(2, "0")}`;
+      document.getElementById("current-question").textContent = prompt.questions[currentStep];
+      document.getElementById("progress-label").textContent = `질문 ${currentStep + 1} / ${prompt.questions.length}`;
+      document.getElementById("progress-fill").style.width = `${((currentStep + 1) / prompt.questions.length) * 100}%`;
+      document.getElementById("answer-input").value = answers[currentStep] || "";
+      document.getElementById("prev-question").disabled = currentStep === 0;
+      document.getElementById("prev-question").style.opacity = currentStep === 0 ? ".45" : "1";
+      const last = currentStep === prompt.questions.length - 1;
+      document.getElementById("next-question").textContent = last ? "문단 다듬기 →" : "다음 질문 →";
+      document.getElementById("skip-question").style.visibility = last ? "hidden" : "visible";
+    }
+    function goToStep(index) {
+      saveCurrentAnswer();
+      currentStep = index;
+      persistDraft();
+      renderWriter();
+    }
+    function saveCurrentAnswer() {
+      if (!activeTopic) return;
+      const answers = [...(draft[activeTopic.id]?.answers || [])];
+      answers[currentStep] = document.getElementById("answer-input").value;
+      draft[activeTopic.id] = { answers, step: currentStep };
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+      document.getElementById("save-state").textContent = "자동 저장됨";
+      renderWriter();
+      document.getElementById("answer-input").focus();
+    }
+    function moveStep(direction) {
+      saveAnswerWithoutRender();
+      if (direction > 0 && currentStep === activeTopic.questions.length - 1) { openRefine(); return; }
+      currentStep = Math.max(0, Math.min(activeTopic.questions.length - 1, currentStep + direction));
+      persistDraft();
+      renderWriter();
+    }
+    function saveAnswerWithoutRender() {
+      const answers = [...(draft[activeTopic.id]?.answers || [])];
+      answers[currentStep] = document.getElementById("answer-input").value;
+      draft[activeTopic.id] = { answers, step: currentStep };
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+      document.getElementById("save-state").textContent = "저장됨";
+    }
+    function openRefine() {
+      saveAnswerWithoutRender();
+      const answers = draft[activeTopic.id]?.answers || [];
+      document.getElementById("review-questions").innerHTML = getPrompt(activeTopic).questions.map(question => `<li>${question}</li>`).join("");
+      const paragraph = answers.filter(answer => answer?.trim()).join("\n\n");
+      document.getElementById("paragraph-input").value = paragraph;
+      updateWordCount();
+      document.getElementById("feedback-preview").innerHTML = "";
+      document.getElementById("save-writing").textContent = "글 저장하고 피드백 보기 ↗";
+      document.getElementById("save-writing").disabled = false;
+      showView("refine");
+    }
+    function createFeedback(text) {
+      const words = countWords(text);
+      const sentences = text.split(/[.!?]+/).filter(sentence => sentence.trim()).length;
+      let note = words < 35
+        ? "이미 글의 씨앗을 만들었어요. 장면의 감각이나 구체적인 이유를 한두 문장 더 보태면 이야기가 더 선명해질 거예요."
+        : words < 90
+          ? "생각을 구체적인 이야기로 잘 키워 주었어요. 문장 사이에 시간이나 이유를 연결하는 표현을 더하면 흐름이 한층 자연스러워져요."
+          : "충분한 분량으로 생각을 풀어냈어요. 소리 내어 읽으며 비슷한 표현을 덜고, 가장 중요한 장면이 잘 드러나는지 확인해 보세요.";
+      return { summary: `구체적인 이야기 ${sentences ? `${sentences}개의 문장` : "의 첫 문장"}을 남겼어요.`, note, words };
+    }
+    function saveWriting() {
+      const text = document.getElementById("paragraph-input").value.trim();
+      if (!text) {
+        document.getElementById("paragraph-input").focus();
+        document.getElementById("paragraph-input").style.borderColor = "#cc7652";
+        return;
+      }
+      const id = `${Date.now()}`;
+      const answers = draft[activeTopic.id]?.answers || [];
+      const feedback = createFeedback(text);
+      const record = {
+        id, topicId: activeTopic.id, topicTitle: activeTopic.title, category: activeTopic.category,
+        date: new Date().toISOString(), original: text, final: "", answers: [...answers], feedback
+      };
+      records.unshift(record);
+      persistRecords();
+      selectedRecordId = id;
+      document.getElementById("feedback-preview").innerHTML = `
+        <div class="feedback-box"><div class="eyebrow">A NOTE FOR YOUR NEXT DRAFT</div>
+          <h3>${feedback.summary}</h3><p>${feedback.note}</p>
+          <p style="margin-top:10px">※ 현재는 AI 교정이 연결되지 않아 글을 자동으로 수정하지 않아요. 아래 기록에서 직접 다듬은 최종본을 저장할 수 있어요.</p>
+          <button class="button secondary small" style="margin-top:16px" onclick="showView('records');openRecord('${id}')">내 기록에서 이어 쓰기 →</button>
+        </div>`;
+      document.getElementById("save-writing").textContent = "저장 완료 ✓";
+      document.getElementById("save-writing").disabled = true;
+      delete draft[activeTopic.id];
+      localStorage.setItem(draftKey, JSON.stringify(draft));
+      renderHome();
+    }
+    function updateWordCount() {
+      document.getElementById("word-count").textContent = `${countWords(document.getElementById("paragraph-input").value)} words`;
+    }
+    function renderRecords() {
+      const sorted = [...records].sort((a, b) => new Date(b.date) - new Date(a.date));
+      const list = document.getElementById("record-list");
+      list.innerHTML = sorted.length ? sorted.map(item => `
+        <div class="record-row ${selectedRecordId === item.id ? "active" : ""}" onclick="openRecord('${item.id}')">
+          <strong>${escapeHtml(item.topicTitle)}</strong><span>${prettyDate(item.date)} · ${countWords(item.original)} words</span>
+        </div>`).join("") : `<div class="empty-state">아직 기록이 없어요.<br>첫 글을 써 보세요.</div>`;
+      if (selectedRecordId && records.some(item => item.id === selectedRecordId)) renderRecordDetail(selectedRecordId);
+      else if (!sorted.length) document.getElementById("record-detail").innerHTML = `<div class="record-empty">첫 번째 영어 글을 완성하면<br>이곳에서 다시 읽을 수 있어요.</div>`;
+    }
+    function openRecord(id) {
+      selectedRecordId = id;
+      showView("records");
+      renderRecordDetail(id);
+    }
+    function renderRecordDetail(id) {
+      const item = records.find(record => record.id === id);
+      if (!item) return;
+      document.getElementById("record-detail").innerHTML = `
+        <div class="eyebrow">${item.category} &nbsp; · &nbsp; ${prettyDate(item.date)}</div>
+        <h2>${escapeHtml(item.topicTitle)}</h2>
+        <h3>MY FIRST DRAFT</h3><div class="record-text">${escapeHtml(item.original)}</div>
+        <div class="feedback-box"><div class="eyebrow">A NOTE FOR YOUR NEXT DRAFT</div><h3>${escapeHtml(item.feedback.summary)}</h3><p>${escapeHtml(item.feedback.note)}</p></div>
+        <h3>MY REVISED VERSION</h3>
+        <textarea id="final-version" placeholder="처음 쓴 글을 다시 읽고, 내가 직접 다듬은 버전을 남겨 보세요.">${escapeHtml(item.final || "")}</textarea>
+        <button class="button small" style="margin-top:12px" onclick="saveFinal('${item.id}')">수정본 저장하기</button>`;
+    }
+    function saveFinal(id) {
+      const item = records.find(record => record.id === id);
+      if (!item) return;
+      item.final = document.getElementById("final-version").value.trim();
+      persistRecords();
+      renderRecordDetail(id);
+      document.querySelector("#record-detail .button").textContent = "저장했어요 ✓";
+    }
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+    }
+    async function lookupDictionary() {
+      const input = document.getElementById("dictionary-input");
+      const result = document.getElementById("dictionary-result");
+      const term = input.value.trim();
+      if (!term) {
+        result.textContent = "Enter an English word or phrase to look it up.";
+        input.focus();
+        return;
+      }
+      result.textContent = "Looking up...";
+      const requestId = ++dictionaryRequestId;
+      const query = new URLSearchParams({ q: term, langpair: "en|ko" });
+      try {
+        const response = await fetch(`https://api.mymemory.translated.net/get?${query}`);
+        if (!response.ok) throw new Error(`Dictionary service returned ${response.status}.`);
+        const data = await response.json();
+        if (requestId !== dictionaryRequestId) return;
+        const translation = data.responseData?.translatedText;
+        if (!translation || data.responseStatus !== 200) {
+          result.textContent = "No translation found. Try a shorter word or phrase.";
+          return;
+        }
+        result.innerHTML = `<strong>${escapeHtml(term)}</strong><br>${escapeHtml(translation)}<br><a href="https://en.dict.naver.com/#/search?query=${encodeURIComponent(term)}" target="_blank" rel="noopener noreferrer">Open Naver English Dictionary ↗</a>`;
+      } catch (error) {
+        if (requestId !== dictionaryRequestId) return;
+        console.error("Dictionary lookup failed.", error);
+        result.textContent = "The dictionary could not be reached. Check your connection and try again.";
+      }
+    }
+    function lookupSelectedWord() {
+      const editor = document.getElementById("answer-input");
+      const selected = editor.value.slice(editor.selectionStart, editor.selectionEnd).trim();
+      if (!selected || selected.length > 60) return;
+      document.getElementById("dictionary-input").value = selected;
+      window.clearTimeout(dictionaryLookupTimer);
+      dictionaryLookupTimer = window.setTimeout(lookupDictionary, 350);
+    }
+
+    document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
+    document.getElementById("start-today").addEventListener("click", () => openTopic(todayTopic().id));
+    document.getElementById("topic-modal").addEventListener("click", event => { if (event.target.id === "topic-modal") closeModal(); });
+    document.getElementById("answer-input").addEventListener("input", () => {
+      document.getElementById("save-state").textContent = "저장 중...";
+      saveAnswerWithoutRender();
+      const step = document.querySelectorAll(".prompt-step")[currentStep];
+      const hasAnswer = document.getElementById("answer-input").value.trim().length > 0;
+      step.classList.toggle("done", hasAnswer);
+      step.querySelector(".step-num").textContent = hasAnswer ? "✓" : String(currentStep + 1);
+    });
+    document.getElementById("prev-question").addEventListener("click", () => moveStep(-1));
+    document.getElementById("next-question").addEventListener("click", () => moveStep(1));
+    document.getElementById("skip-question").addEventListener("click", () => moveStep(1));
+    document.getElementById("back-to-writer").addEventListener("click", () => { renderWriter(); showView("writer"); });
+    document.getElementById("paragraph-input").addEventListener("input", () => {
+      document.getElementById("paragraph-input").style.borderColor = "";
+      updateWordCount();
+    });
+    document.getElementById("save-writing").addEventListener("click", saveWriting);
+    document.getElementById("dictionary-search-button").addEventListener("click", lookupDictionary);
+    document.getElementById("dictionary-input").addEventListener("keydown", event => {
+      if (event.key === "Enter") { event.preventDefault(); lookupDictionary(); }
+    });
+    document.getElementById("answer-input").addEventListener("mouseup", lookupSelectedWord);
+    document.getElementById("answer-input").addEventListener("keyup", event => {
+      if (event.shiftKey || event.key.startsWith("Arrow")) lookupSelectedWord();
+    });
+    renderHome();
+    scheduleDailyRefresh();
+  </script>
+</body>
+</html>
